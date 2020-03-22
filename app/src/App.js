@@ -1,7 +1,9 @@
 import React, { Suspense } from 'react';
-import './App.css';
+import { Router } from "@reach/router";
 
 import Header from './components/Header/Header';
+import Login from './components/Login/Login';
+import './App.css';
 
 function App() {
   return (
@@ -11,11 +13,10 @@ function App() {
       </div>
       <React.StrictMode>
         <Suspense>
-          <div className='container'>
-            <div className='row'>
-              <div className='col-md-3'></div>
-              <div className='col-md-9'></div>
-            </div>
+          <div className='container-fluid'>
+            <Router>
+              <Login path="/" />
+            </Router>
           </div>
         </Suspense>
       </React.StrictMode>
