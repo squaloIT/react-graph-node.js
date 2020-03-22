@@ -1,13 +1,15 @@
 import React, { Suspense } from 'react';
 import './App.css';
 
+import Header from './components/Header/Header';
+
 function App() {
   return (
-    <React.StrictMode>
-      <div className="App">
-        <div className="">
-          <Header />
-        </div>
+    <div className="App">
+      <div className="">
+        <Header />
+      </div>
+      <React.StrictMode>
         <Suspense>
           <div className='container'>
             <div className='row'>
@@ -16,8 +18,8 @@ function App() {
             </div>
           </div>
         </Suspense>
-      </div>
-    </React.StrictMode>
+      </React.StrictMode>
+    </div>
   );
 }
 
