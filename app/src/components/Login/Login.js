@@ -3,20 +3,26 @@ import { FormGroup, FormControl, InputLabel, Input, FormHelperText, Button, Card
 import axios from 'axios'
 
 import config from './../../config';
+import tokenFunctions from './../../utils/token';
 import './Login.css'
 
 const Login = () => {
     var [email, setEmail] = React.useState('');
     var [password, setPassword] = React.useState('');
+    var [error, setError] = React.useState('');
 
     const onSubmit = () => {
         axios
             .post(config.serverUrl + "/user/login", { email, password })
             .then(res => {
                 console.log(res.data);
+                alert(res.data.message);
+                tokenFunctions.setAuthDataInLocalStorage({ auth: res.data.authData })
+                setError("");
             })
             .catch(err => {
                 console.log(err);
+                setError("There is no user with specified email address!");
             });
     };
 
@@ -75,6 +81,8 @@ const Login = () => {
                                     Login
                                 </Button>
                             </FormControl>
+                            <br />
+                            <FormHelperText error>{error}</FormHelperText>
                         </FormGroup>
                     </CardContent>
                 </Card>

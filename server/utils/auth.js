@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("./../config/index");
 const { connection, pool } = require('./db')
-const { bcrypt } = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 const checkEmail = email => {
     const regExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+.[A-Z]{2,}$/gim;
@@ -13,7 +13,7 @@ const checkPass = pass => {
 };
 
 const newToken = user => {
-    return jwt.sign({ id: user._id }, config.secrets.jwt, {
+    return jwt.sign({ id: user.id, email: user.email }, config.secrets.jwt, {
         expiresIn: config.secrets.jwtExp
     });
 };
@@ -57,9 +57,6 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     const { email, password } = req.body;
-    console.log(req.body);
-    const hash = await bcrypt.hash(password, config.secrets.saltRounds);
-    console.log(hash)
 
     if (!checkEmail(email)) {
         return res.status(401).json({ message: "Enter apropriate email format" });
@@ -67,33 +64,42 @@ const login = async (req, res) => {
         return res.status(401).json({ message: "Enter apropriate password format" });
     }
 
-    // try {
-    //     const hash = await bcrypt.hash(password, config.secrets.saltRounds);
-    //     pool.query('SELECT * from user WHERE email=? AND password=?', [email, hash], function (error, results, fields) {
-    //         if (error) throw error;
-    //         console.log('The solution is: ', results[0].solution);
-    //     });
+    try {
+        pool.query(
+            `SELECT * from user WHERE email="${email}"`,
+            async function (error, results, fields) {
+                if (error) throw error;
+                var user = {
+                    ...results[0]
+                }
+                console.log(user);
 
-    // } catch (e) {
-    //     console.error(e);
-    //     res.status(500).send(e);
-    // }
+                if (!user.email) {
+                    res.status(401).send();
+                    return;
+                }
 
-    // const token = newToken(user);
+                const isSame = await bcrypt.compare(password, user.password);
 
-    res.status(200).json({ hash })
-    // .json({
-    //     message: "User logged in",
-    //     user: {
-    //         username: user.username,
-    //         friendsIds: [],
-    //         authData: {
-    //             userId: user._id,
-    //             idToken: token,
-    //             expiresIn: 2000
-    //         }
-    //     }
-    // });
+                if (isSame) {
+                    const token = newToken(user);
+                    res.json({
+                        message: "User logged in",
+                        authData: {
+                            idToken: token,
+                            expiresIn: 2000
+                        }
+                    });
+                } else {
+                    res.status(401).send();
+                    return;
+                }
+            }
+        );
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e);
+    }
 };
 
 module.exports = { register, login };
