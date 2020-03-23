@@ -1,4 +1,5 @@
 import React from 'react';
+import { redirectTo } from "@reach/router";
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,6 +17,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
 import './Nav.css'
+import tokenFunctions from './../../../utils/token';
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -106,6 +108,11 @@ export default function Nav() {
         setMobileMoreAnchorEl(event.currentTarget);
     };
 
+    const logout = () => {
+        tokenFunctions.cleanAuthDataFromLocalStorage();
+        redirectTo("/");
+    }
+
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -119,6 +126,7 @@ export default function Nav() {
         >
             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
         </Menu>
     );
 
