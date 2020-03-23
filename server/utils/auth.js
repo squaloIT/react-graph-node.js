@@ -56,8 +56,10 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    console.log(req.body);
     const { email, password } = req.body;
+    console.log(req.body);
+    const hash = await bcrypt.hash(password, config.secrets.saltRounds);
+    console.log(hash)
 
     if (!checkEmail(email)) {
         return res.status(401).json({ message: "Enter apropriate email format" });
@@ -65,31 +67,33 @@ const login = async (req, res) => {
         return res.status(401).json({ message: "Enter apropriate password format" });
     }
 
-    try {
-        pool.query('SELECT * from user WHERE email=? AND password=?', function (error, results, fields) {
-            if (error) throw error;
-            console.log('The solution is: ', results[0].solution);
-        });
+    // try {
+    //     const hash = await bcrypt.hash(password, config.secrets.saltRounds);
+    //     pool.query('SELECT * from user WHERE email=? AND password=?', [email, hash], function (error, results, fields) {
+    //         if (error) throw error;
+    //         console.log('The solution is: ', results[0].solution);
+    //     });
 
-    } catch (e) {
-        console.error(e);
-        res.status(500).send(e);
-    }
+    // } catch (e) {
+    //     console.error(e);
+    //     res.status(500).send(e);
+    // }
 
-    const token = newToken(user);
+    // const token = newToken(user);
 
-    res.status(200).json({
-        message: "User logged in",
-        user: {
-            username: user.username,
-            friendsIds: [],
-            authData: {
-                userId: user._id,
-                idToken: token,
-                expiresIn: 2000
-            }
-        }
-    });
+    res.status(200).json({ hash })
+    // .json({
+    //     message: "User logged in",
+    //     user: {
+    //         username: user.username,
+    //         friendsIds: [],
+    //         authData: {
+    //             userId: user._id,
+    //             idToken: token,
+    //             expiresIn: 2000
+    //         }
+    //     }
+    // });
 };
 
 module.exports = { register, login };

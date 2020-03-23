@@ -14,7 +14,8 @@ const baseConfig = {
     },
     secrets: {
         jwt: process.env.JWT_SECRET || "learneverything",
-        jwtExp: "100d"
+        jwtExp: "100d",
+        saltRounds: 10
     }
 };
 
