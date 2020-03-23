@@ -1,15 +1,23 @@
 import React from 'react';
 import { FormGroup, FormControl, InputLabel, Input, FormHelperText, Button, Card, CardContent, Typography } from '@material-ui/core';
+import axios from 'axios'
 
+import config from './../../config';
 import './Login.css'
 
 const Login = () => {
-
     var [email, setEmail] = React.useState('');
     var [password, setPassword] = React.useState('');
 
-    const onSubmit = values => {
-        console.log(email, password)
+    const onSubmit = () => {
+        axios
+            .post(config.serverUrl + "/user/login", { email, password })
+            .then(res => {
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     };
 
     var isButtonDisabled = () => {
