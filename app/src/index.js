@@ -1,13 +1,15 @@
+import 'font-awesome/css/font-awesome.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import RootContext from './components/context/RootContext';
+import './index.css';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <RootContext>
     <App />
-  </React.StrictMode>,
+  </RootContext>,
   document.getElementById('root')
 );
 
