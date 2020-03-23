@@ -1,23 +1,22 @@
-import React from 'react';
-import { redirectTo } from "@reach/router";
-import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
+import InputBase from '@material-ui/core/InputBase';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
+import MenuItem from '@material-ui/core/MenuItem';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
-
-import './Nav.css'
-import tokenFunctions from './../../../utils/token';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import SearchIcon from '@material-ui/icons/Search';
+import { navigate } from "@reach/router";
+import React, { useContext } from 'react';
+import { RootContext } from './../../context/RootContext';
+import './Nav.css';
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -87,6 +86,7 @@ export default function Nav() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    const { authData, setAuthData } = useContext(RootContext);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -109,67 +109,116 @@ export default function Nav() {
     };
 
     const logout = () => {
-        tokenFunctions.cleanAuthDataFromLocalStorage();
-        redirectTo("/");
+        setAuthData(null);
+        navigate("/");
     }
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-            <MenuItem onClick={logout}>Logout</MenuItem>
-        </Menu>
+        authData != null ?
+            <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                id={menuId}
+                keepMounted
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+            >
+                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={e => navigate('http://localhost:3000/')}>Login</MenuItem>
+                <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+                <MenuItem onClick={logout}>Logout</MenuItem>
+            </Menu>
+            : ''
     );
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
+        authData != null ?
+            <Menu
+                anchorEl={mobileMoreAnchorEl}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                id={mobileMenuId}
+                keepMounted
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={isMobileMenuOpen}
+                onClose={handleMobileMenuClose}
+            >
+                <MenuItem>
+                    <IconButton aria-label="show 4 new mails" color="inherit">
+                        <Badge badgeContent={4} color="secondary">
+                            <MailIcon />
+                        </Badge>
+                    </IconButton>
+                    <p>Messages</p>
+                </MenuItem>
+                <MenuItem>
+                    <IconButton aria-label="show 11 new notifications" color="inherit">
+                        <Badge badgeContent={11} color="secondary">
+                            <NotificationsIcon />
+                        </Badge>
+                    </IconButton>
+                    <p>Notifications</p>
+                </MenuItem>
+                <MenuItem onClick={handleProfileMenuOpen}>
+                    <IconButton
+                        aria-label="account of current user"
+                        aria-controls="primary-search-account-menu"
+                        aria-haspopup="true"
+                        color="inherit"
+                    >
+                        <AccountCircle />
+                    </IconButton>
+                    <p>Profile</p>
+                </MenuItem>
+            </Menu>
+            : ''
+    );
+
+    const renderIconsRight = (
+        authData != null ?
+            <div className={classes.sectionDesktop}>
                 <IconButton aria-label="show 4 new mails" color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <MailIcon />
                     </Badge>
                 </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton aria-label="show 11 new notifications" color="inherit">
-                    <Badge badgeContent={11} color="secondary">
+                <IconButton aria-label="show 17 new notifications" color="inherit">
+                    <Badge badgeContent={17} color="secondary">
                         <NotificationsIcon />
                     </Badge>
                 </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton
+                    edge="end"
                     aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
+                    aria-controls={menuId}
                     aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
                     color="inherit"
                 >
                     <AccountCircle />
                 </IconButton>
-                <p>Profile</p>
-            </MenuItem>
-        </Menu>
-    );
+            </div> : ''
+    )
+
+    const searchInput = (
+        authData != null ?
+            <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                    <SearchIcon />
+                </div>
+                <InputBase
+                    placeholder="Search…"
+                    classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                    }}
+                    inputProps={{ 'aria-label': 'search' }}
+                />
+            </div>
+            : ''
+    )
 
     return (
         <div className={classes.grow}>
@@ -186,42 +235,9 @@ export default function Nav() {
                     <Typography className={classes.title} variant="h6" noWrap>
                         My Shopping <i className="fa fa-shopping-cart"></i> App
           </Typography>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div>
+                    {searchInput}
                     <div className={classes.grow} />
-                    <div className={classes.sectionDesktop}>
-                        <IconButton aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle />
-                        </IconButton>
-                    </div>
+                    {renderIconsRight}
                     <div className={classes.sectionMobile}>
                         <IconButton
                             aria-label="show more"

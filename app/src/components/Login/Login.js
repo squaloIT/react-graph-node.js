@@ -1,15 +1,16 @@
-import React from 'react';
-import { FormGroup, FormControl, InputLabel, Input, FormHelperText, Button, Card, CardContent, Typography } from '@material-ui/core';
-import axios from 'axios'
-
+import { Button, Card, CardContent, FormControl, FormGroup, FormHelperText, Input, InputLabel, Typography } from '@material-ui/core';
+import { Redirect } from '@reach/router';
+import axios from 'axios';
+import React, { useContext } from 'react';
+import { RootContext } from '../context/RootContext';
 import config from './../../config';
-import tokenFunctions from './../../utils/token';
-import './Login.css'
+import './Login.css';
 
 const Login = () => {
     var [email, setEmail] = React.useState('');
     var [password, setPassword] = React.useState('');
     var [error, setError] = React.useState('');
+    const { authData, setAuthData } = useContext(RootContext);
 
     const onSubmit = () => {
         axios
@@ -17,8 +18,8 @@ const Login = () => {
             .then(res => {
                 console.log(res.data);
                 alert(res.data.message);
-                tokenFunctions.setAuthDataInLocalStorage({ auth: res.data.authData })
                 setError("");
+                setAuthData(res.data.authData)
             })
             .catch(err => {
                 console.log(err);
@@ -39,55 +40,63 @@ const Login = () => {
         return !regex.test(password) ? true : false;
     }
 
+    console.log(authData);
     return (
-        <div className='d-flex justify-content-center align-items-center mainBlock'>
-            <div className='col-md-3'>
-                <Card>
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            Sign in
+        authData == null ?
+            <div className='d-flex justify-content-center align-items-center mainBlock'>
+                <div className='col-md-3'>
+                    <Card>
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="h2">
+                                Sign in
                         </Typography>
-                        <FormGroup>
-                            <FormControl color="primary" required>
-                                <InputLabel htmlFor="tb-email">Email address</InputLabel>
-                                <Input
-                                    id="tb-email"
-                                    name="tb-email"
-                                    aria-describedby="tb-email-helper-text"
-                                    error={hasEmailError()}
-                                    value={email}
-                                    onChange={e => setEmail(e.target.value)}
-                                />
-                                <FormHelperText id="tb-email-helper-text">We'll never share your email.</FormHelperText>
-                            </FormControl>
-                            <br />
-                            <FormControl color="primary" required>
-                                <InputLabel htmlFor="tb-password">Password</InputLabel>
-                                <Input
-                                    id="tb-password"
-                                    aria-describedby="tb-password-helper-text"
-                                    error={hasPasswordError()}
-                                    type="password"
-                                    value={password}
-                                    onChange={e => setPassword(e.target.value)} />
-                                <FormHelperText id="tb-password-helper-text">Or your super secret password.</FormHelperText>
-                            </FormControl>
-                            <br />
-                            <FormControl color="primary">
-                                <Button variant="contained" color="primary" size="small"
-                                    onClick={onSubmit}
-                                    disabled={isButtonDisabled()}
-                                >
-                                    Login
+                            <FormGroup>
+                                <FormControl color="primary" required>
+                                    <InputLabel htmlFor="tb-email">Email address</InputLabel>
+                                    <Input
+                                        id="tb-email"
+                                        name="tb-email"
+                                        aria-describedby="tb-email-helper-text"
+                                        error={hasEmailError()}
+                                        value={email}
+                                        onChange={e => setEmail(e.target.value)}
+                                    />
+                                    <FormHelperText id="tb-email-helper-text">We'll never share your email.</FormHelperText>
+                                </FormControl>
+                                <br />
+                                <FormControl color="primary" required>
+                                    <InputLabel htmlFor="tb-password">Password</InputLabel>
+                                    <Input
+                                        id="tb-password"
+                                        aria-describedby="tb-password-helper-text"
+                                        error={hasPasswordError()}
+                                        type="password"
+                                        value={password}
+                                        onChange={e => setPassword(e.target.value)} />
+                                    <FormHelperText id="tb-password-helper-text">Or your super secret password.</FormHelperText>
+                                </FormControl>
+                                <br />
+                                <FormControl color="primary">
+                                    <Button variant="contained" color="primary" size="small"
+                                        onClick={onSubmit}
+                                        disabled={isButtonDisabled()}
+                                    >
+                                        Login
                                 </Button>
-                            </FormControl>
-                            <br />
-                            <FormHelperText error>{error}</FormHelperText>
-                        </FormGroup>
-                    </CardContent>
-                </Card>
+                                </FormControl>
+                                <br />
+                                <FormHelperText error>{error}</FormHelperText>
+                            </FormGroup>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-        </div>
+            :
+            <Redirect
+                from="login"
+                to="home"
+                noThrow
+            />
     );
 };
 

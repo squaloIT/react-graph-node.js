@@ -1,9 +1,11 @@
-import React, { Suspense } from 'react';
 import { Router } from "@reach/router";
-
-import Header from './components/Header/Header';
-import Login from './components/Login/Login';
+import React, { Suspense } from 'react';
 import './App.css';
+import Header from './components/Header/Header';
+import ProtectedRoute from './components/hoc/ProtectedRoute';
+import Home from './components/Home/Home';
+import Login from './components/Login/Login';
+
 
 function App() {
   return (
@@ -15,7 +17,8 @@ function App() {
         <Suspense>
           <div className='container-fluid'>
             <Router>
-              <Login path="/" />
+              <Login path="/" exact />
+              <ProtectedRoute path='/home' component={Home} />
             </Router>
           </div>
         </Suspense>

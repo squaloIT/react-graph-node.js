@@ -1,12 +1,15 @@
+import 'font-awesome/css/font-awesome.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import RootContext from './components/context/RootContext';
+import './index.css';
 import * as serviceWorker from './serviceWorker';
-import 'font-awesome/css/font-awesome.min.css';
 
 ReactDOM.render(
-  <App />,
+  <RootContext>
+    <App />
+  </RootContext>,
   document.getElementById('root')
 );
 

@@ -7,4 +7,8 @@ const cleanAuthDataFromLocalStorage = () => {
     localStorage.removeItem("shopping_app_token_info");
 };
 
-export default { setAuthDataInLocalStorage, cleanAuthDataFromLocalStorage };
+const isAuthenticated = () => {
+    return localStorage.getItem("shopping_app_token_info") || false;
+};
+
+export default { setAuthDataInLocalStorage, cleanAuthDataFromLocalStorage, isAuthenticated };
