@@ -16,7 +16,6 @@ const Login = () => {
         axios
             .post(config.serverUrl + "/user/login", { email, password })
             .then(res => {
-                console.log(res.data);
                 alert(res.data.message);
                 setError("");
                 setAuthData(res.data.authData)
@@ -40,7 +39,6 @@ const Login = () => {
         return !regex.test(password) ? true : false;
     }
 
-    console.log(authData);
     return (
         authData == null ?
             <div className='d-flex justify-content-center align-items-center mainBlock'>
