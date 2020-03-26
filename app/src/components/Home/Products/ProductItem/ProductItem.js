@@ -45,11 +45,15 @@ const useStyles = makeStyles({
 const ProductItem = (props) => {
   const classes = useStyles();
 
+  const addToCart = (productId) => {
+    console.log(productId)
+  }
+
   return (
     <div className='col-md-3 card-margin'>
       <Card className={classes.root}>
         <CardContent>
-          <Typography className={classes.title} color="textPrimery" gutterBottom>
+          <Typography className={classes.title} color="textPrimary" gutterBottom>
             {props.productName}
           </Typography>
           <Typography variant="h5" component="h2">
@@ -59,7 +63,7 @@ const ProductItem = (props) => {
             {props.description}
           </Typography>
         </CardContent>
-        <IconButton color="primary" aria-label="add to shopping cart">
+        <IconButton color="primary" aria-label="add to shopping cart" onClick={() => addToCart(props.productId)}>
           <AddShoppingCartIcon className={classes.iconSize} />
         </IconButton>
       </Card>
