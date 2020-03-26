@@ -1,4 +1,6 @@
 const { json, urlencoded } = require("body-parser");
+const http = require("http");
+const socketIo = require("socket.io");
 const cors = require("cors");
 const morgan = require("morgan");
 const config = require("./config");
@@ -8,6 +10,8 @@ const login = require("./utils/auth").login;
 const { productsAll, addProduct } = require("./resources/products");
 // import { connect } from './utils/db'
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server); // < Interesting!
 
 app.use(cors());
 app.use(json());
@@ -24,7 +28,7 @@ app.get("/products", productsAll);
 app.post("/products/add", addProduct);
 
 const start = async () => {
-    app.listen(config.port, () => {
+    server.listen(config.port, () => {
         console.log(`REST API on http://localhost:${config.port}/`);
     });
 };

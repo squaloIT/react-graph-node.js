@@ -49,11 +49,11 @@ const addProduct = async (req, res) => {
 
   try {
     var jwtDecoded = decodeTokenAndReturnInfo(req);
-
   } catch (err) {
     console.log(err);
     res.status(500).json({ errorMessage: "Send authorization token" });
   }
+
   console.log(jwtDecoded)
   if (jwtDecoded && jwtDecoded.id) {
     try {
