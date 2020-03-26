@@ -18,10 +18,10 @@ const productsAll = async (req, res) => {
   if (jwtDecoded && jwtDecoded.id) {
     try {
       pool.query(
-        `SELECT p.id, p.product_code, p.description, p.product_name, p.standard_cost, p.list_price, p.category, s.company from products p INNER JOIN suppliers s ON p.supplier_ids = s.id`,
+        `SELECT p.id, p.product_code, p.description, p.product_name, p.standard_cost, p.list_price, p.category, s.company from products p INNER JOIN suppliers s ON p.supplier_ids = s.id WHERE NOT EXISTS (SELECT * FROM shopping_cart WHERE product_id = p.id)`,
         async function (error, results, fields) {
           if (error) throw error;
-          console.log("stigao req")
+
           var products = [
             ...results
           ]
