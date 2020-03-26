@@ -6,9 +6,12 @@ import Typography from '@material-ui/core/Typography';
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import AlarmIcon from '@material-ui/icons/Alarm';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import axios from 'axios';
 import React from 'react';
+import config from './../../../../config';
+import jwt from 'jsonwebtoken'
+import tokenFunctions from '../../../../utils/token'
 import './ProductItem.css';
-
 
 const useStyles = makeStyles({
   root: {
@@ -22,10 +25,6 @@ const useStyles = makeStyles({
     '&:hover': {
       boxShadow: '3px 3px 12px #666'
     },
-    // backgroundColor: (theme.palette.common.white, 0.15),
-    // '&:hover': {
-    //   backgroundColor: fade(theme.palette.common.white, 0.25),
-    // },
   },
   title: {
     fontSize: 18,
@@ -46,7 +45,22 @@ const ProductItem = (props) => {
   const classes = useStyles();
 
   const addToCart = (productId) => {
-    console.log(productId)
+    const token = tokenFunctions.getAuthDataFromLocalStorage()
+    const userData = jwt.decode(token.idToken);
+    console.log(userData);
+
+    axios.post(`${config.serverUrl}/products/add`, {
+      user_id: userData.id,
+      product_id: productId
+    })
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+
+
   }
 
   return (
