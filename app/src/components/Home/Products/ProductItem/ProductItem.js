@@ -49,10 +49,15 @@ const ProductItem = (props) => {
     const userData = jwt.decode(token.idToken);
     console.log(userData);
 
-    axios.post(`${config.serverUrl}/products/add`, {
-      user_id: userData.id,
-      product_id: productId
-    })
+    axios.post(`${config.serverUrl}/products/add`,
+      {
+        user_id: userData.id,
+        product_id: productId
+      },
+      {
+        headers: tokenFunctions.getHeaderWithToken(token)
+      }
+    )
       .then(res => {
         console.log(res)
       })

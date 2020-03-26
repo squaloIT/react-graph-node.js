@@ -5,7 +5,7 @@ const config = require("./config");
 const express = require("express");
 
 const login = require("./utils/auth").login;
-const productsAll = require("./resources/products").productsAll;
+const { productsAll, addProduct } = require("./resources/products");
 // import { connect } from './utils/db'
 const app = express();
 
@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 
 app.post("/user/login", login);
 app.get("/products", productsAll);
+app.post("/products/add", addProduct);
 
 const start = async () => {
     app.listen(config.port, () => {

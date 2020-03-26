@@ -15,9 +15,16 @@ const isAuthenticated = () => {
     return localStorage.getItem("shopping_app_token_info") || false;
 };
 
+const getHeaderWithToken = (token) => {
+    return {
+        'Authorization': `Bearer ${token.idToken}`
+    }
+}
+
 export default {
     setAuthDataInLocalStorage,
     cleanAuthDataFromLocalStorage,
     isAuthenticated,
-    getAuthDataFromLocalStorage
+    getAuthDataFromLocalStorage,
+    getHeaderWithToken
 };
