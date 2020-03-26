@@ -5,6 +5,7 @@ const config = require("./config");
 const express = require("express");
 
 const login = require("./utils/auth").login;
+const productsAll = require("./resources/products").productsAll;
 // import { connect } from './utils/db'
 const app = express();
 
@@ -19,7 +20,7 @@ app.use((req, res, next) => {
 });
 
 app.post("/user/login", login);
-//! GRESKE OBRADITI KAKO TREBA
+app.get("/products", productsAll);
 
 const start = async () => {
     app.listen(config.port, () => {

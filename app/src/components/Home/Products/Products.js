@@ -1,30 +1,56 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'
-import './Products.css';
+
+import config from './../../../config'
+import tokenFunc from './../../../utils/token';
 import ProductItem from './ProductItem/ProductItem';
+import './Products.css';
 
 const Products = () => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-    axios.get(config.serverUrl + "/products")
+    const token = tokenFunc.getAuthDataFromLocalStorage()
+    console.log(token);
+
+    axios.get(config.serverUrl + "/products", {
+      headers: {
+        'Authorization': `Bearer ${token.idToken}`
+      }
+    })
       .then(res => {
         console.log(res);
-        // this.setProducts(res.products)
+        if (res.status == 204) {
+          alert("There are no products available")
+          return;
+        }
+        setProducts(res.data.products);
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
+
+        if (err.status == 401) {
+          alert(err.message);
+        }
       })
-  })
+  }, []) //KLJUCAN PRAZAN NIZ
 
   return (
-    <div className='col-md-12 aqua-bckg'>
+    <div className='col-md-12 '>
       <h2>Products</h2>
-      {
-        products.forEach(element => {
-          <ProductItem productName={element.product_name} standardCost={element.standard_cost} description={element.description}></ProductItem>
-        })
-      }
+      <div className="d-flex flex-wrap .justify-content-around">
+        {
+          products.map(element => {
+            return <ProductItem key={element.id} productName={element.product_name} standardCost={element.standard_cost} description={element.description}></ProductItem>
+          })
+          // (
+          //   props.friendsForChat.map(({ userID, username }) => {
+          //     return (
+          //       <ChatWindow key={userID} userID={userID} username={username} />
+          //     );
+          //   })
+        }
+      </div>
     </div>
   );
 };
