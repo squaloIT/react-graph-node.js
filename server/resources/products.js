@@ -3,6 +3,10 @@ const { pool } = require('./../utils/db');
 const mysql = require('mysql')
 
 const decodeTokenAndReturnInfo = (req) => {
+  if (req.headers.Authorization) {
+    req.headers.authorization = req.headers.Authorization
+  }
+
   if (req.headers && req.headers.authorization) {
     const token = req.headers.authorization.split(" ")[1];
     return jwt.decode(token);
@@ -44,7 +48,7 @@ const productsAll = async (req, res) => {
 
 };
 
-const addProduct = async (req, res) => {
+const addProductREST = async (req, res) => {
   const { product_id: productId, user_id: userId } = req.body;
 
   try {
@@ -77,5 +81,32 @@ const addProduct = async (req, res) => {
     res.status(401).json({ errorMessage: "You have to be authorized to view this content" })
   }
 }
+const addProductSOCKET = (data, socket) => {
+  const { headers, product_id: productId, user_id: userId } = data;
+  try {
+    var jwtDecoded = decodeTokenAndReturnInfo({ headers });
+  } catch (err) {
+    console.log(err);
+  }
 
-module.exports = { productsAll, addProduct };
+  console.log(jwtDecoded)
+  if (jwtDecoded && jwtDecoded.id) {
+    try {
+      var sql = "INSERT INTO shopping_cart (product_id, user_id) VALUES (?, ?)";
+      var inserts = [productId, userId];
+      sql = mysql.format(sql, inserts);
+
+      pool.query(sql, function (error, results, fields) {
+        if (error)
+          throw error;
+      });
+    } catch (e) {
+      console.error(e);
+      // res.status(500).send(e);
+    }
+  } else {
+    // res.status(401).json({ errorMessage: "You have to be authorized to view this content" })
+  }
+}
+
+module.exports = { productsAll, addProductSOCKET };

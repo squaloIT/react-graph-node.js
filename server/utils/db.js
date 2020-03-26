@@ -5,7 +5,8 @@ var con = mysql.createConnection({
     host: config.db.host,
     database: config.db.dbName,
     user: config.db.username,
-    password: config.db.password
+    password: config.db.password,
+    multipleStatements: true
 });
 
 var pool = mysql.createPool({

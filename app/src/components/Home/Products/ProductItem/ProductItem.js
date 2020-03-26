@@ -6,12 +6,13 @@ import Typography from '@material-ui/core/Typography';
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import AlarmIcon from '@material-ui/icons/Alarm';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import axios from 'axios';
+import jwt from 'jsonwebtoken';
 import React from 'react';
+import socketIOClient from "socket.io-client";
+import tokenFunctions from '../../../../utils/token';
 import config from './../../../../config';
-import jwt from 'jsonwebtoken'
-import tokenFunctions from '../../../../utils/token'
 import './ProductItem.css';
+
 
 const useStyles = makeStyles({
   root: {
@@ -43,27 +44,32 @@ const useStyles = makeStyles({
 
 const ProductItem = (props) => {
   const classes = useStyles();
+  const socket = socketIOClient(config.serverUrl);
 
   const addToCart = (productId) => {
     const token = tokenFunctions.getAuthDataFromLocalStorage()
     const userData = jwt.decode(token.idToken);
-    console.log(userData);
+    console.log(socket)
+    socket.emit(
+      "addProduct",
+      { headers: tokenFunctions.getHeaderWithToken(token), product_id: productId, user_id: userData.id }
+    );
 
-    axios.post(`${config.serverUrl}/products/add`,
-      {
-        user_id: userData.id,
-        product_id: productId
-      },
-      {
-        headers: tokenFunctions.getHeaderWithToken(token)
-      }
-    )
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => {
-        console.error(err)
-      })
+    // axios.post(`${config.serverUrl}/products/add`,
+    //   {
+    //     user_id: userData.id,
+    //     product_id: productId
+    //   },
+    //   {
+    //     headers: tokenFunctions.getHeaderWithToken(token)
+    //   }
+    // )
+    //   .then(res => {
+    //     console.log(res)
+    //   })
+    //   .catch(err => {
+    //     console.error(err)
+    //   })
 
 
   }
