@@ -6,10 +6,9 @@ import Typography from '@material-ui/core/Typography';
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import AlarmIcon from '@material-ui/icons/Alarm';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import jwt from 'jsonwebtoken';
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 import React from 'react';
-import socketIOClient from "socket.io-client";
 import tokenFunctions from '../../../../utils/token';
 import config from './../../../../config';
 import './ProductItem.css';
@@ -45,7 +44,6 @@ const useStyles = makeStyles({
 
 const ProductItem = (props) => {
   const classes = useStyles();
-  const socket = socketIOClient(config.serverUrl);
 
   const addToCart = (productId) => {
     const token = tokenFunctions.getAuthDataFromLocalStorage()
@@ -66,8 +64,6 @@ const ProductItem = (props) => {
       .catch(err => {
         console.error(err)
       })
-
-
   }
 
   return (

@@ -11,7 +11,18 @@ const checkEmail = email => {
 const checkPass = pass => {
     return pass.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/i);
 };
+const decodeTokenAndReturnInfo = (req) => {
+    if (req.headers.Authorization) {
+        req.headers.authorization = req.headers.Authorization
+    }
 
+    if (req.headers && req.headers.authorization) {
+        const token = req.headers.authorization.split(" ")[1];
+        return jwt.decode(token);
+    } else {
+        throw new Error();
+    }
+}
 const newToken = user => {
     return jwt.sign({ id: user.id, email: user.email }, config.secrets.jwt, {
         expiresIn: config.secrets.jwtExp
