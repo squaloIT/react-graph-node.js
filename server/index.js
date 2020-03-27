@@ -8,7 +8,7 @@ var io = require('socket.io')(http);
 const { pool } = require('./utils/db');
 
 const login = require("./utils/auth").login;
-const { productsAll, addProductSOCKET } = require("./resources/products");
+const { productsAll, addProductSOCKET, addProduct } = require("./resources/products");
 
 app.use(cors());
 app.use(json());
@@ -21,23 +21,26 @@ app.use((req, res, next) => {
 
 app.post("/user/login", login);
 app.get("/products", productsAll);
-// app.post("/products/add", addProduct);
+app.post("/products/add", (req, res) => addProduct(req, res, io));
 
-io.on("connection", socket => {
-    socket.emit("products_changed")//{ products: results });
-    socket.on('addProduct', (data) => {
-        addProductSOCKET(data)
-        pool.query("SELECT p.id, p.product_code, p.description, p.product_name, p.standard_cost, p.list_price, p.category, s.company from products p INNER JOIN suppliers s ON p.supplier_ids = s.id WHERE NOT EXISTS (SELECT * FROM shopping_cart WHERE product_id = p.id)", function (error, results, fields) {
-            if (error)
-                throw error;
+// const conn = io.on("connection", socket => {
+//     console.log("Connection established")
+// socket.emit("products_changed")//{ products: results });
+// socket.on('addProduct', (data) => {
+//     pool.query("SELECT p.id, p.product_code, p.description, p.product_name, p.standard_cost, p.list_price, p.category, s.company from products p INNER JOIN suppliers s ON p.supplier_ids = s.id WHERE NOT EXISTS (SELECT * FROM shopping_cart WHERE product_id = p.id)", function (error, results, fields) {
+//         if (error)
+//             throw error;
 
-            console.log(socket)
-            console.log(results)
-            socket.emit("products_changed", { products: results });
-        })
-    });
-    socket.on("disconnect", () => console.log("Client disconnected"))
-});
+//         // console.log(socket)
+//         console.log(results)
+//         socket.emit("products_changed", { products: results });
+//     })
+// });
+
+// socket.on("disconnect", () => console.log("Client disconnected"))
+// });
+
+// conn.on("products_changed")
 
 const start = async () => {
     http.listen(config.port, () => {

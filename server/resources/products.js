@@ -48,7 +48,7 @@ const productsAll = async (req, res) => {
 
 };
 
-const addProductREST = async (req, res) => {
+const addProduct = async (req, res, io) => {
   const { product_id: productId, user_id: userId } = req.body;
 
   try {
@@ -69,10 +69,9 @@ const addProductREST = async (req, res) => {
         if (error)
           throw error;
 
-        console.log(results);
+        getProductsAndEmitt(io)
         res.status(200);
-      }
-      );
+      });
     } catch (e) {
       console.error(e);
       res.status(500).send(e);
@@ -81,6 +80,7 @@ const addProductREST = async (req, res) => {
     res.status(401).json({ errorMessage: "You have to be authorized to view this content" })
   }
 }
+
 const addProductSOCKET = (data, socket) => {
   const { headers, product_id: productId, user_id: userId } = data;
   try {
@@ -109,4 +109,12 @@ const addProductSOCKET = (data, socket) => {
   }
 }
 
-module.exports = { productsAll, addProductSOCKET };
+const getProductsAndEmitt = (io) => {
+  pool.query("SELECT p.id, p.product_code, p.description, p.product_name, p.standard_cost, p.list_price, p.category, s.company from products p INNER JOIN suppliers s ON p.supplier_ids = s.id WHERE NOT EXISTS (SELECT * FROM shopping_cart WHERE product_id = p.id)", function (error, results, fields) {
+    if (error)
+      throw error;
+
+    io.sockets.emit('products_changed', results);
+  })
+}
+module.exports = { productsAll, addProduct };

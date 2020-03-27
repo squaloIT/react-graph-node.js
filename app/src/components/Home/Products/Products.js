@@ -22,7 +22,6 @@ const Products = () => {
 
   useEffect(() => {
     socket.on("products_changed", products => {
-      console.log(products)
       setProducts(products)
     });
 
@@ -35,12 +34,6 @@ const Products = () => {
 
     return () => sub.unsubscribe();
   }, []);
-  // const products = useObservable(products$, (err) => {
-  //   console.error(err);
-  //   if (err.status == 401) {
-  //     alert(err.message);
-  //   }
-  // })
 
   return (
     <div className='col-md-12 '>
