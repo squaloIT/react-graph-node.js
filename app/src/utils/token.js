@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 const setAuthDataInLocalStorage = (tokenInfo) => {
     console.log("setAuthDataInLocalStorage ", tokenInfo);
     localStorage.setItem("shopping_app_token_info", JSON.stringify(tokenInfo));
@@ -11,6 +13,9 @@ const getAuthDataFromLocalStorage = () => {
     return JSON.parse(localStorage.getItem("shopping_app_token_info"));
 };
 
+const decodeJWTFromLocalStorageAndReturnData = () => {
+    return jwt.decode(getAuthDataFromLocalStorage().idToken);
+}
 const isAuthenticated = () => {
     return localStorage.getItem("shopping_app_token_info") || false;
 };
@@ -26,5 +31,6 @@ export default {
     cleanAuthDataFromLocalStorage,
     isAuthenticated,
     getAuthDataFromLocalStorage,
-    getHeaderWithToken
+    getHeaderWithToken,
+    decodeJWTFromLocalStorageAndReturnData
 };

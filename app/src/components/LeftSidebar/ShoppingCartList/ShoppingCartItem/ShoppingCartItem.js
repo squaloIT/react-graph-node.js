@@ -8,6 +8,7 @@ import axios from 'axios';
 import React from 'react';
 import config from './../../../../config';
 import './ShoppingCartItem.css';
+import tokenFunc from './../../../../utils/token'
 
 const useStyles = makeStyles({
   root: {
@@ -40,9 +41,14 @@ const useStyles = makeStyles({
 
 const ShoppingCartItem = props => {
   const classes = useStyles();
+  const userId = tokenFunc.decodeJWTFromLocalStorageAndReturnData().id;
 
   const removeFromCart = async (productId) => {
-    const res = await axios.delete(`${config.serverUrl}/user/delete-item?product_id=${productId}&user_id=${userId}`);
+    console.log(productId);
+    const res = await axios.delete(`${config.serverUrl}/user/delete-item/${productId}`,
+      {
+        headers: tokenFunc.getHeaderWithToken(tokenFunc.getAuthDataFromLocalStorage())
+      });
     console.log(res);
   }
 

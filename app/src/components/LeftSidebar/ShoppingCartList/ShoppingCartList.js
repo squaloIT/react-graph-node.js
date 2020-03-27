@@ -37,7 +37,7 @@ const ShoppingCartList = () => {
     <div className='d-flex flex-wrap'>
       {userCart ?
         userCart.map(element => {
-          return <ShoppingCartItem key={element.id} productCode={element.product_code} productName={element.product_name} standardCost={element.standard_cost} productId={element.id}></ShoppingCartItem>
+          return <ShoppingCartItem key={element.id} productCode={element.product_code} productName={element.product_name} standardCost={element.standard_cost} productId={element.productId}></ShoppingCartItem>
         }) : ''
       }
     </div>

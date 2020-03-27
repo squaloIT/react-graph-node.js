@@ -1,6 +1,7 @@
 const { pool } = require('./../../utils/db');
 const mysql = require('mysql')
 const decodeTokenAndReturnInfo = require('./../../utils/helper-functions').decodeTokenAndReturnInfo
+const getProductsAndEmitt = require('./../../utils/helper-functions').getProductsAndEmitt
 
 const productsAll = async (req, res) => {
   const jwtDecoded = decodeTokenAndReturnInfo(req)
@@ -68,12 +69,4 @@ const addProduct = async (req, res, io) => {
   }
 }
 
-const getProductsAndEmitt = (io) => {
-  pool.query("SELECT p.id, p.product_code, p.description, p.product_name, p.standard_cost, p.list_price, p.category, s.company from products p INNER JOIN suppliers s ON p.supplier_ids = s.id WHERE NOT EXISTS (SELECT * FROM shopping_cart WHERE product_id = p.id)", function (error, results, fields) {
-    if (error)
-      throw error;
-
-    io.sockets.emit('products_changed', results);
-  })
-}
 module.exports = { productsAll, addProduct };

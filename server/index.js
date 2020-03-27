@@ -8,7 +8,7 @@ var io = require('socket.io')(http);
 
 const login = require("./utils/auth").login;
 const { productsAll, addProduct } = require("./resources/products/products");
-const { userCart } = require("./resources/user/user");
+const { userCart, deleteCartItem } = require("./resources/user/user");
 
 app.use(cors());
 app.use(json());
@@ -23,6 +23,7 @@ app.post("/user/login", login);
 app.get("/products", productsAll);
 app.post("/products/add", (req, res) => addProduct(req, res, io));
 app.get("/user/cart", userCart);
+app.delete("/user/delete-item/:productId", (req, res) => deleteCartItem(req, res, io));
 
 const start = async () => {
     http.listen(config.port, () => {
