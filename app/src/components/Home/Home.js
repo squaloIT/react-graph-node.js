@@ -7,7 +7,7 @@ import './Home.css';
 const Home = () => {
     return (
         <div className='col-md-12 d-flex justify-content-between m-t-20'>
-            <div className='col-md-3'>
+            <div className='col-md-4'>
                 <LeftSidebar />
             </div>
             <div className='col-md-8'>

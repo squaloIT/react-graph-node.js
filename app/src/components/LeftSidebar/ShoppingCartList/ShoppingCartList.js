@@ -33,23 +33,18 @@ const ShoppingCartList = () => {
     return () => sub.unsubscribe;
   }, []);
 
-  const deleteCart = () => {
-
-  }
-
-
   return (
-    <div>
+    <div className='d-flex flex-wrap'>
       {userCart ?
         userCart.map(element => {
           return <ShoppingCartItem key={element.id} productCode={element.product_code} productName={element.product_name} standardCost={element.standard_cost} productId={element.id}></ShoppingCartItem>
         }) : ''
       }
-      <IconButton aria-label="Remove all items from cart" onClick={() => deleteCart()}>
-        <RemoveShoppingCartIcon />
-      </IconButton>
     </div>
   );
+  // <IconButton aria-label="Remove all items from cart" onClick={() => deleteCart()}>
+  //   <RemoveShoppingCartIcon />
+  // </IconButton>
 };
 
 export default ShoppingCartList;

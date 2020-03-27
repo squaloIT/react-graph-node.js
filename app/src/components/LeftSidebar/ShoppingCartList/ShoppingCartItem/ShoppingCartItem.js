@@ -1,16 +1,22 @@
-import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
+import axios from 'axios';
+import React from 'react';
+import config from './../../../../config';
+import './ShoppingCartItem.css';
 
 const useStyles = makeStyles({
   root: {
     marginTop: 20,
     // minWidth: 275,
     // maxWidth: '100%',
+    minHeight: 200,
+    display: 'flex',
+    justifyContent: 'space-between',
     boxShadow: '3px 3px 12px #ccc',
     '&:hover': {
       boxShadow: '3px 3px 12px #666'
@@ -19,37 +25,36 @@ const useStyles = makeStyles({
   title: {
     fontSize: 16,
     textTransform: "uppercase",
-    marginBottom: 12
+    marginBottom: 12,
+    textAlign: 'left'
   },
   pos: {
     marginBottom: 12,
   },
   iconSize: {
     fontSize: 35,
-    position: "absolute",
-    bottom: 10
+    // height: 50
+    // marginRight: 20
   }
 });
 
 const ShoppingCartItem = props => {
   const classes = useStyles();
 
-  const removeFromCart = (productId) => {
-
+  const removeFromCart = async (productId) => {
+    const res = await axios.delete(`${config.serverUrl}/user/delete-item?product_id=${productId}&user_id=${userId}`);
+    console.log(res);
   }
 
   return (
-    <div>
+    <div className='col-md-6 mb-20'>
       <Card className={classes.root}>
         <CardContent>
           <Typography className={classes.title} color="textPrimary" gutterBottom>
             {props.productName}
           </Typography>
           <Typography className={classes.title} color="textPrimary" gutterBottom>
-            {props.productCode}
-          </Typography>
-          <Typography className={classes.title} color="textPrimary" gutterBottom>
-            {props.standardCost}$
+            {props.productCode} -  <b>{props.standardCost}$</b>
           </Typography>
         </CardContent>
         <IconButton aria-label="Remove from cart" onClick={() => removeFromCart(props.productId)}>
