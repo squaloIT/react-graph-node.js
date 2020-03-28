@@ -2,6 +2,7 @@ import { Button, Card, CardContent, FormControl, FormGroup, FormHelperText, Inpu
 import { Redirect } from '@reach/router';
 import axios from 'axios';
 import React, { useContext } from 'react';
+import socketIOClient from "socket.io-client";
 import { RootContext } from '../context/RootContext';
 import config from './../../config';
 import './Login.css';
@@ -19,6 +20,8 @@ const Login = () => {
                 alert(res.data.message);
                 setError("");
                 setAuthData(res.data.authData)
+                const socket = socketIOClient(config.serverUrl);
+                socket.emit('join', { email })
             })
             .catch(err => {
                 console.log(err);

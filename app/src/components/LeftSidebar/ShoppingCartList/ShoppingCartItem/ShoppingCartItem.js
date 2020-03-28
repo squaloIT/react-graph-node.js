@@ -41,15 +41,14 @@ const useStyles = makeStyles({
 
 const ShoppingCartItem = props => {
   const classes = useStyles();
-  const userId = tokenFunc.decodeJWTFromLocalStorageAndReturnData().id;
 
   const removeFromCart = async (productId) => {
-    console.log(productId);
     const res = await axios.delete(`${config.serverUrl}/user/delete-item/${productId}`,
       {
         headers: tokenFunc.getHeaderWithToken(tokenFunc.getAuthDataFromLocalStorage())
       });
-    console.log(res);
+
+    // alert(res.data.message);
   }
 
   return (

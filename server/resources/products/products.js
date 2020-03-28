@@ -2,11 +2,10 @@ const { pool } = require('./../../utils/db');
 const mysql = require('mysql')
 const decodeTokenAndReturnInfo = require('./../../utils/helper-functions').decodeTokenAndReturnInfo
 const getProductsAndEmitt = require('./../../utils/helper-functions').getProductsAndEmitt
+const getUserCartAndEmitt = require('./../../utils/helper-functions').getUserCartAndEmitt
 
 const productsAll = async (req, res) => {
   const jwtDecoded = decodeTokenAndReturnInfo(req)
-  console.log(jwtDecoded)
-
   if (jwtDecoded && jwtDecoded.id) {
     try {
       pool.query(
@@ -46,7 +45,6 @@ const addProduct = async (req, res, io) => {
     res.status(500).json({ errorMessage: "Send authorization token" });
   }
 
-  console.log(jwtDecoded)
   if (jwtDecoded && jwtDecoded.id) {
     try {
       var sql = "INSERT INTO shopping_cart (product_id, user_id) VALUES (?, ?)";
@@ -58,6 +56,7 @@ const addProduct = async (req, res, io) => {
           throw error;
 
         getProductsAndEmitt(io)
+        getUserCartAndEmitt(jwtDecoded.id, jwtDecoded.email, io)
         res.status(200);
       });
     } catch (e) {

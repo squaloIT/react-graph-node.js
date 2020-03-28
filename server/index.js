@@ -19,6 +19,12 @@ app.use((req, res, next) => {
     next();
 });
 
+io.sockets.on('connection', function (socket) {
+    socket.on('join', function (data) {
+        console.log("PRIKJUCIO SE " + data.email)
+        socket.join(data.email);
+    });
+});
 app.post("/user/login", login);
 app.get("/products", productsAll);
 app.post("/products/add", (req, res) => addProduct(req, res, io));

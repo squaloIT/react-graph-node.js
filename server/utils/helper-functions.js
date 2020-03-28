@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { pool } = require('./db');
+const { pool, connection } = require('./db');
 
 const decodeTokenAndReturnInfo = (req) => {
   if (req.headers.Authorization) {
@@ -25,4 +25,14 @@ const getProductsAndEmitt = (io) => {
     io.sockets.emit('products_changed', results);
   })
 }
-module.exports = { decodeTokenAndReturnInfo, getProductsAndEmitt };
+
+const getUserCartAndEmitt = (userId, email, io) => {
+  pool.query("SELECT sc.id, p.id AS productId, p.product_code, p.product_name, p.standard_cost, u.email FROM shopping_cart sc INNER JOIN user u ON u.id = sc.user_id INNER JOIN products p ON p.id = sc.product_id WHERE u.id = " + connection.escape(userId), function (error, results, fields) {
+    if (error)
+      throw error;
+
+    io.emit('cart_changed_' + email, results);//in(email). io.sockets
+  })
+}
+
+module.exports = { decodeTokenAndReturnInfo, getProductsAndEmitt, getUserCartAndEmitt };
