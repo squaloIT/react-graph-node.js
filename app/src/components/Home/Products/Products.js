@@ -12,7 +12,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const socket = socketIOClient(config.serverUrl);
   const token = tokenFunc.getAuthDataFromLocalStorage()
-  const products$ = ajax.getJSON(config.serverUrl + "/products",
+  const products$ = ajax.getJSON(config.serverUrl + "/api/products",
     {
       'Authorization': `Bearer ${token.idToken}`
     }).pipe(

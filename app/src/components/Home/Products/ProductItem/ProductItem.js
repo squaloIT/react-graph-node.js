@@ -49,7 +49,7 @@ const ProductItem = (props) => {
     const token = tokenFunctions.getAuthDataFromLocalStorage()
     const userData = jwt.decode(token.idToken);
 
-    axios.post(`${config.serverUrl}/products/add`,
+    axios.post(`${config.serverUrl}/api/products/add`,
       {
         user_id: userData.id,
         product_id: productId

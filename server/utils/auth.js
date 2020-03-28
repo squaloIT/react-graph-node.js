@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const config = require("./../config/index");
-const { connection, pool } = require('./db')
+const { pool } = require('./db')
 const bcrypt = require('bcrypt');
+const expressJwt = require('express-jwt')
 
 const checkEmail = email => {
     const regExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+.[A-Z]{2,}$/gim;
@@ -11,6 +12,7 @@ const checkEmail = email => {
 const checkPass = pass => {
     return pass.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/i);
 };
+
 const decodeTokenAndReturnInfo = (req) => {
     if (req.headers.Authorization) {
         req.headers.authorization = req.headers.Authorization
@@ -113,4 +115,18 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+const checkToken = expressJwt({ secret: config.secrets.jwt });
+
+const decodeToken = () => (req, res, next) => {
+    if (config.disableAuth) {
+        return next()
+    }
+
+    if (req.query && req.query.hasOwnProperty('access_token')) {
+        req.headers.authorization = 'Bearer ' + req.query.access_token
+    }
+
+    checkToken(req, res, next)
+}
+
+module.exports = { register, login, decodeTokenAndReturnInfo, protect: decodeToken() };

@@ -16,7 +16,8 @@ const baseConfig = {
         jwt: process.env.JWT_SECRET || "learneverything",
         jwtExp: "100d",
         saltRounds: 10
-    }
+    },
+    disableAuth: false
 };
 
 let envConfig = {};

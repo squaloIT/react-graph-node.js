@@ -11,7 +11,7 @@ const ShoppingCartList = () => {
   const [userCart, setUserCart] = useState([])
   const socket = socketIOClient(config.serverUrl);
   const email = tokenFunction.decodeJWTFromLocalStorageAndReturnData().email
-  const userCart$ = ajax.getJSON(`${config.serverUrl}/user/cart`,
+  const userCart$ = ajax.getJSON(`${config.serverUrl}/api/user/cart`,
     tokenFunction.getHeaderWithToken(tokenFunction.getAuthDataFromLocalStorage())
   )
     .pipe(

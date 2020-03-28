@@ -43,7 +43,7 @@ const ShoppingCartItem = props => {
   const classes = useStyles();
 
   const removeFromCart = async (productId) => {
-    const res = await axios.delete(`${config.serverUrl}/user/delete-item/${productId}`,
+    const res = await axios.delete(`${config.serverUrl}/api/user/delete-item/${productId}`,
       {
         headers: tokenFunc.getHeaderWithToken(tokenFunc.getAuthDataFromLocalStorage())
       });

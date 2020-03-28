@@ -1,8 +1,8 @@
-const { pool } = require('./../../utils/db');
+const { pool } = require('./../../../utils/db');
 const mysql = require('mysql')
-const decodeTokenAndReturnInfo = require('./../../utils/helper-functions').decodeTokenAndReturnInfo
-const getProductsAndEmitt = require('./../../utils/helper-functions').getProductsAndEmitt
-const getUserCartAndEmitt = require('./../../utils/helper-functions').getUserCartAndEmitt
+const decodeTokenAndReturnInfo = require('./../../../utils/helper-functions').decodeTokenAndReturnInfo
+const getProductsAndEmitt = require('./../../../utils/helper-functions').getProductsAndEmitt
+const getUserCartAndEmitt = require('./../../../utils/helper-functions').getUserCartAndEmitt
 
 const userCart = async (req, res) => {
   const jwtDecoded = decodeTokenAndReturnInfo(req)
@@ -33,7 +33,7 @@ const userCart = async (req, res) => {
   }
 };
 
-const deleteCartItem = async (req, res, io) => {
+const deleteCartItem = async (req, res) => {
   const jwtDecoded = decodeTokenAndReturnInfo(req)
   var productId = +req.params.productId;
 
@@ -45,8 +45,8 @@ const deleteCartItem = async (req, res, io) => {
         if (error) throw error;
 
         res.status(200).json({ message: 'Successfully deleted item' });
-        getProductsAndEmitt(io);
-        getUserCartAndEmitt(jwtDecoded.id, jwtDecoded.email, io);
+        getProductsAndEmitt(req.body.io);
+        getUserCartAndEmitt(jwtDecoded.id, jwtDecoded.email, req.body.io);
       });
     } catch (e) {
       console.error(e);

@@ -1,8 +1,8 @@
-const { pool } = require('./../../utils/db');
+const { pool } = require('./../../../utils/db');
 const mysql = require('mysql')
-const decodeTokenAndReturnInfo = require('./../../utils/helper-functions').decodeTokenAndReturnInfo
-const getProductsAndEmitt = require('./../../utils/helper-functions').getProductsAndEmitt
-const getUserCartAndEmitt = require('./../../utils/helper-functions').getUserCartAndEmitt
+const decodeTokenAndReturnInfo = require('./../../../utils/helper-functions').decodeTokenAndReturnInfo
+const getProductsAndEmitt = require('./../../../utils/helper-functions').getProductsAndEmitt
+const getUserCartAndEmitt = require('./../../../utils/helper-functions').getUserCartAndEmitt
 
 const productsAll = async (req, res) => {
   const jwtDecoded = decodeTokenAndReturnInfo(req)
@@ -55,8 +55,8 @@ const addProduct = async (req, res, io) => {
         if (error)
           throw error;
 
-        getProductsAndEmitt(io)
-        getUserCartAndEmitt(jwtDecoded.id, jwtDecoded.email, io)
+        getProductsAndEmitt(req.body.io)
+        getUserCartAndEmitt(jwtDecoded.id, jwtDecoded.email, req.body.io)
         res.status(200);
       });
     } catch (e) {
