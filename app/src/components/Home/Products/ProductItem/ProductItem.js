@@ -6,11 +6,7 @@ import Typography from '@material-ui/core/Typography';
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import AlarmIcon from '@material-ui/icons/Alarm';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
 import React from 'react';
-import tokenFunctions from '../../../../utils/token';
-import config from './../../../../config';
 import './ProductItem.css';
 
 
@@ -45,27 +41,6 @@ const useStyles = makeStyles({
 const ProductItem = (props) => {
   const classes = useStyles();
 
-  const addToCart = (productId) => {
-    const token = tokenFunctions.getAuthDataFromLocalStorage()
-    const userData = jwt.decode(token.idToken);
-
-    axios.post(`${config.serverUrl}/api/products/add`,
-      {
-        user_id: userData.id,
-        product_id: productId
-      },
-      {
-        headers: tokenFunctions.getHeaderWithToken(token)
-      }
-    )
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => {
-        console.error(err)
-      })
-  }
-
   return (
     <div className='col-md-3 card-margin'>
       <Card className={classes.root}>
@@ -80,7 +55,7 @@ const ProductItem = (props) => {
             {props.description}
           </Typography>
         </CardContent>
-        <IconButton color="primary" aria-label="add to shopping cart" onClick={() => addToCart(props.productId)}>
+        <IconButton color="primary" aria-label="add to shopping cart" onClick={() => props.addToCart(props.productId)}>
           <AddShoppingCartIcon className={classes.iconSize} />
         </IconButton>
       </Card>

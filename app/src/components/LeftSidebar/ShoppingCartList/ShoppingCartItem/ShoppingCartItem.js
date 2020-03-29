@@ -42,15 +42,6 @@ const useStyles = makeStyles({
 const ShoppingCartItem = props => {
   const classes = useStyles();
 
-  const removeFromCart = async (productId) => {
-    const res = await axios.delete(`${config.serverUrl}/api/user/delete-item/${productId}`,
-      {
-        headers: tokenFunc.getHeaderWithToken(tokenFunc.getAuthDataFromLocalStorage())
-      });
-
-    // alert(res.data.message);
-  }
-
   return (
     <div className='col-md-6 mb-20'>
       <Card className={classes.root}>
@@ -62,7 +53,7 @@ const ShoppingCartItem = props => {
             {props.productCode} -  <b>{props.standardCost}$</b>
           </Typography>
         </CardContent>
-        <IconButton aria-label="Remove from cart" onClick={() => removeFromCart(props.productId)}>
+        <IconButton aria-label="Remove from cart" onClick={() => props.removeFromCart(props.productId)}>
           <DeleteIcon className={classes.iconSize} color="secondary" />
         </IconButton>
       </Card>

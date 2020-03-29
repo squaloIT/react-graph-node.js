@@ -51,14 +51,20 @@ const addProduct = async (req, res, io) => {
       var inserts = [productId, userId];
       sql = mysql.format(sql, inserts);
 
-      pool.query(sql, function (error, results, fields) {
-        if (error)
-          throw error;
+      pool.getConnection((err, connection) => {
+        connection.query(sql, function (error, results, fields) {
+          if (error)
+            throw error;
 
-        getProductsAndEmitt(req.body.io)
-        getUserCartAndEmitt(jwtDecoded.id, jwtDecoded.email, req.body.io)
-        res.status(200);
-      });
+          getProductsAndEmitt(connection, req.body.io)
+          getUserCartAndEmitt(connection, jwtDecoded.id, jwtDecoded.email, req.body.io)
+
+          connection.release() //OVde moguc bug ako su izvrsavanje query-a asinhroni a jesu
+
+          res.status(200);
+        });
+      })
+
     } catch (e) {
       console.error(e);
       res.status(500).send(e);

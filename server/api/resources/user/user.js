@@ -41,13 +41,16 @@ const deleteCartItem = async (req, res) => {
     try {
       var sql = "DELETE FROM shopping_cart WHERE user_id=? AND product_id=?";
       sql = mysql.format(sql, [jwtDecoded.id, productId]);
-      pool.query(sql, async function (error, results, fields) {
-        if (error) throw error;
+      pool.getConnection((err, connection) => {
+        connection.query(sql, function (error, results, fields) {
+          if (error) throw error;
 
-        res.status(200).json({ message: 'Successfully deleted item' });
-        getProductsAndEmitt(req.body.io);
-        getUserCartAndEmitt(jwtDecoded.id, jwtDecoded.email, req.body.io);
-      });
+          getProductsAndEmitt(connection, req.body.io);
+          getUserCartAndEmitt(connection, jwtDecoded.id, jwtDecoded.email, req.body.io);
+          res.status(200).json({ message: 'Successfully deleted item' });
+        })
+      })
+        ;
     } catch (e) {
       console.error(e);
       res.status(500).send(e);
