@@ -48,6 +48,7 @@ const deleteCartItem = async (req, res) => {
           getProductsAndEmitt(connection, req.body.io);
           getUserCartAndEmitt(connection, jwtDecoded.id, jwtDecoded.email, req.body.io);
           res.status(200).json({ message: 'Successfully deleted item' });
+          connection.release()
         })
       })
         ;
@@ -60,4 +61,4 @@ const deleteCartItem = async (req, res) => {
   }
 }
 
-module.exports = { userCart, deleteCartItem }
+module.exports = { userCart, deleteCartItem } 

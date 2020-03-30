@@ -50,6 +50,7 @@ const Home = () => {
         });
 
         const sub = userCart$.subscribe(cart => {
+            console.log(` NE BI TREBALO NA SVAKI POZIV {cart}`)
             console.log(cart)
             dispatch({
                 type: actions.SET_CART,
@@ -63,7 +64,7 @@ const Home = () => {
 
         return () => {
             sub.unsubscribe();
-            socket.close();
+            socket.off("cart_changed_" + email);
         }
     }, []);
 
@@ -81,6 +82,7 @@ const Home = () => {
         });
 
         const sub = products$.subscribe((products) => {
+            console.log(` NE BI TREBALO NA SVAKI POZIV {products}`)
             console.log(products)
             dispatch({
                 type: actions.SET_PRODUCTS,
@@ -98,7 +100,7 @@ const Home = () => {
 
         return () => {
             sub.unsubscribe()
-            socket.close()
+            socket.off("products_changed")
         };
     }, []);
 

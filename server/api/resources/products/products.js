@@ -10,7 +10,7 @@ const productsAll = async (req, res) => {
     try {
       pool.query(
         `SELECT p.id, p.product_code, p.description, p.product_name, p.standard_cost, p.list_price, p.category, s.company from products p INNER JOIN suppliers s ON p.supplier_ids = s.id WHERE NOT EXISTS (SELECT * FROM shopping_cart WHERE product_id = p.id)`,
-        async function (error, results, fields) {
+        function (error, results, fields) {
           if (error) throw error;
 
           var products = [
@@ -58,20 +58,22 @@ const addProduct = async (req, res, io) => {
 
           getProductsAndEmitt(connection, req.body.io)
           getUserCartAndEmitt(connection, jwtDecoded.id, jwtDecoded.email, req.body.io)
-
+          res.status(200).send();
           connection.release() //OVde moguc bug ako su izvrsavanje query-a asinhroni a jesu
-
-          res.status(200);
         });
       })
+      res.status(200).send();
 
     } catch (e) {
       console.error(e);
       res.status(500).send(e);
     }
+    res.status(200).send();
   } else {
     res.status(401).json({ errorMessage: "You have to be authorized to view this content" })
   }
+  res.status(500).send();
+
 }
 
 module.exports = { productsAll, addProduct };
